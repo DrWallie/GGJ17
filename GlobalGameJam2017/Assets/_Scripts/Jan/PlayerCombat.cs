@@ -61,7 +61,9 @@ public class PlayerCombat : NetworkBehaviour {
     /// </summary>
     private void EquipWeapon(bool equip)
     {
-        weapons[equippedWeapon].thisWeapon.weaponTransform.gameObject.SetActive(equip);
+        DoubleWeapon dW = weapons[equippedWeapon];
+        dW.thisWeapon.weaponTransform.gameObject.SetActive(equip);
+        dW.currentStance = dW.stance1;
     }
 
     #endregion
@@ -94,7 +96,9 @@ public class PlayerCombat : NetworkBehaviour {
         float yOffset = Random.Range(-w.offsetY, w.offsetY);
 
         //using offset info to give the bullet rotation
-        Quaternion offsetBullet = new Quaternion(xOffset, yOffset, 0, 0);
+        Quaternion offsetBullet = transform.rotation;
+        offsetBullet.x += xOffset;
+        offsetBullet.y += yOffset;
 
         GameObject bullet = Instantiate(
             dW.currentStance.bullet, //prefab
@@ -111,6 +115,9 @@ public class PlayerCombat : NetworkBehaviour {
 
         //remove ammo
         dW.ammo -= w.bulletsPerShot;
+
+        //meegeven dat ie mag bouncen, en force bullets
+
         StartCoroutine(timeBetweenAutomaticFire());
     }
 

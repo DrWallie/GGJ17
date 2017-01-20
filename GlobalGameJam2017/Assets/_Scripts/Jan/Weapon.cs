@@ -28,11 +28,6 @@ public class DoubleWeapon
     public WeaponStance stance1, stance2;
     [HideInInspector]
     public WeaponStance currentStance;
-
-    public DoubleWeapon()
-    {
-        currentStance = stance1;
-    }
 }
 
 [Serializable]
