@@ -19,13 +19,14 @@ public class PlayerCombat : NetworkBehaviour {
         if (!isLocalPlayer)
             return;
 
+        if (Input.GetButton("Fire2"))
+            SwitchStances();
+
         if (!mayFire)
             return;
 
         if (Input.GetButton("Fire1"))
             UseWeapon();
-
-        //F2 for switching stances
 
         //F3 for delegates unique weapon arts
     }
@@ -63,12 +64,27 @@ public class PlayerCombat : NetworkBehaviour {
     {
         DoubleWeapon dW = weapons[equippedWeapon];
         dW.thisWeapon.weaponTransform.gameObject.SetActive(equip);
-        dW.currentStance = dW.stance1;
+        dW.currentStance = 0; //reset stance to first
     }
 
     #endregion
 
     #region Weapon Functions
+
+    private void SwitchStances()
+    {
+        DoubleWeapon dW = weapons[equippedWeapon];
+
+        if (dW.stances.Length == 1) //if there is no other stance
+            return;
+
+        if (dW.currentStance < dW.stances.Length - 1)
+            dW.currentStance++;
+        else
+            dW.currentStance = 0;
+    }
+
+    #region Shoot
 
     private void UseWeapon()
     {
@@ -80,7 +96,7 @@ public class PlayerCombat : NetworkBehaviour {
     private bool CheckAmmo()
     {
         DoubleWeapon dW = weapons[equippedWeapon];
-        if (dW.ammo - dW.currentStance.bulletsPerShot < 0)
+        if (dW.ammo - dW.stances[dW.currentStance].bulletsPerShot < 0)
             return false;
         return true;
     }
@@ -89,7 +105,7 @@ public class PlayerCombat : NetworkBehaviour {
     private void CmdFireWeapon()
     {
         DoubleWeapon dW = weapons[equippedWeapon];
-        WeaponStance w = dW.currentStance;
+        WeaponStance w = dW.stances[dW.currentStance];
 
         //calculate offset
         float xOffset = Random.Range(-w.offsetX, w.offsetX);
@@ -101,7 +117,7 @@ public class PlayerCombat : NetworkBehaviour {
         offsetBullet.y += yOffset;
 
         GameObject bullet = Instantiate(
-            dW.currentStance.bullet, //prefab
+            dW.stances[dW.currentStance].bullet, //prefab
             dW.thisWeapon.outputBullet.position, //output position
             offsetBullet);
         // Add velocity to the bullet
@@ -125,10 +141,13 @@ public class PlayerCombat : NetworkBehaviour {
     private IEnumerator timeBetweenAutomaticFire()
     {
         mayFire = false;
+        DoubleWeapon dW = weapons[equippedWeapon];
         yield return new WaitForSeconds(
-            weapons[equippedWeapon].currentStance.timeBetweenBullets);
+            dW.stances[dW.currentStance].timeBetweenBullets);
         mayFire = true;
     }
+
+    #endregion
 
     #endregion
 }
