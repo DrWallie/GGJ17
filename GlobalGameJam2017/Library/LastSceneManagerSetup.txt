@@ -1,12 +1,1 @@
-<<<<<<< HEAD
-sceneSetups:
-<<<<<<< HEAD
-- path: Assets/_Scenes/MainMenu.unity
-=======
-- path: Assets/_Scenes/Test_Online.unity
->>>>>>> 74a5096cac7d62f9de466993a1cccd763437e993
-  isLoaded: 1
-  isActive: 1
-=======
 sceneSetups: []
->>>>>>> parent of 09f1a33... Main menu basics

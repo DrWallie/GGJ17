@@ -70,12 +70,9 @@ public class PlayerCombat : NetworkBehaviour {
 
     private void UseWeapon()
     {
-        DoubleWeapon dW = weapons[equippedWeapon];
         if (!CheckAmmo())
-        {
-            //possible "empty weapon" action
             return;
-        }
+        CmdFireWeapon();
     }
 
     private bool CheckAmmo()
@@ -87,7 +84,7 @@ public class PlayerCombat : NetworkBehaviour {
     }
 
     [Command]
-    private void FireWeapon()
+    private void CmdFireWeapon()
     {
         DoubleWeapon dW = weapons[equippedWeapon];
         WeaponStance w = dW.currentStance;
