@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 3;
     public float secToJumpApex = .5f;
 
-    float gravity, jumpVelocity;
+    private float gravity, jumpVelocity;
 
     private Vector3 surfaceNormal;
     private Vector3 charNormal;
