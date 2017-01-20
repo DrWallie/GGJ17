@@ -16,15 +16,7 @@ public class PlayerCombat : MonoBehaviour {
 
     private void InitializeFirstWeapon()
     {
-        for (int i = 0; i < weapons.Length; i++)
-        {
-            DoubleWeapon dW = weapons[i];
-            if (dW.ammo > 0)
-            {
-                EquipWeapon(i);
-                break;
-            }
-        }
+        EquipWeapon(true);
     }
 
     public void EquipWeapon(DoubleWeapon dW)
