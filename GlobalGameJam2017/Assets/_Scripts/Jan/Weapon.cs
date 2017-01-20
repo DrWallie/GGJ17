@@ -25,14 +25,9 @@ public class DoubleWeapon
     public int ammo, maxAmmo;
     public Weapon thisWeapon;
     [Tooltip("Your two weapon stances.")]
-    public WeaponStance stance1, stance2;
+    public WeaponStance[] stances;
     [HideInInspector]
-    public WeaponStance currentStance;
-
-    public DoubleWeapon()
-    {
-        currentStance = stance1;
-    }
+    public int currentStance;
 }
 
 [Serializable]
