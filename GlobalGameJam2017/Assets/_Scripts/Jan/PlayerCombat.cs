@@ -19,8 +19,9 @@ public class PlayerCombat : NetworkBehaviour {
         if (!isLocalPlayer)
             return;
 
-        if (Input.GetButton("Fire2"))
-            SwitchStances();
+        float wheel = Input.GetAxis("Mouse ScrollWheel");
+        if (wheel != 0f)
+            SwitchStances(wheel);
 
         if (!mayFire)
             return;
@@ -71,17 +72,24 @@ public class PlayerCombat : NetworkBehaviour {
 
     #region Weapon Functions
 
-    private void SwitchStances()
+    private void SwitchStances(float wheelInput)
     {
         DoubleWeapon dW = weapons[equippedWeapon];
 
         if (dW.stances.Length == 1) //if there is no other stance
             return;
 
-        if (dW.currentStance < dW.stances.Length - 1)
-            dW.currentStance++;
-        else
+        int dir = (wheelInput < 0)? -1: 1; //direction
+
+        //update stance
+        int newDir = dW.currentStance + dir;
+
+        if (newDir < 0)
+            dW.currentStance = dW.stances.Length - 1;
+        else if (newDir == dW.stances.Length)
             dW.currentStance = 0;
+        else
+            dW.currentStance = newDir;
     }
 
     #region Shoot
