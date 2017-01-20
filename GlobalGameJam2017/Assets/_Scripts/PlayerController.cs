@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        cam.SetParent(transform);
         charNormal = transform.up; // normal starts as character up direction
         charTransform = transform;
         charPosOld = transform.position;
