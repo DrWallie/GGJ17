@@ -12,7 +12,11 @@ public class WeaponStance {
     [Tooltip("the addforce the victim has when hit.")]
     public float forceBullets;
     public bool bouncingBullets;
+    public float speedBullets;
+    public float lifeTimeBullets;
+    public float timeBetweenBullets;
     public int bulletsPerShot;
+    public GameObject bullet;
 }
 
 [Serializable]
