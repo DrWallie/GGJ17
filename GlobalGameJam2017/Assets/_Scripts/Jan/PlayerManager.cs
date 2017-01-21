@@ -100,7 +100,7 @@ public class PlayerManager : NetworkBehaviour {
     {
         if (!isLocalPlayer)
             return;
-
+        print(1);
         List<PlayerManager> scores = GetScores();
         LocalGameManager.thisManager.ShowScores(scores, true); //send the data to the lgm to be shown in the menu
     }
