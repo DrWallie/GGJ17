@@ -48,7 +48,6 @@ public class PlayerManager : NetworkBehaviour {
             //get ID based on how many players there are
             
             thisID = allPlayers.Length;
-            print(thisID + " " + GameManager.thisManager.minPlayerCount);
         }
 
         //hier zit een nare, nare bug
@@ -81,7 +80,7 @@ public class PlayerManager : NetworkBehaviour {
         if (health <= 0)
         {
             health = 0;
-            CmdOnKill();
+            CmdOnDeath();
         }
     }
 

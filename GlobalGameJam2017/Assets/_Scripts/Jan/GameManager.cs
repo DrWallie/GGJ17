@@ -51,7 +51,7 @@ public class GameManager : NetworkBehaviour {
     private void EndGame()
     {
         StopAllCoroutines();
-        
+
         //stop game
         foreach (GameObject p in players)
         {
@@ -67,7 +67,8 @@ public class GameManager : NetworkBehaviour {
         List<PlayerManager> pMs = GetScores();
         //do something nice with this list in playerManager
         //the list goes from 0 = lowest to length = highest
-        for(int i = 0; i < pMs.Count; i++)
+
+        for (int i = 0; i < pMs.Count; i++)
         {
             PlayerManager pM = pMs[i].GetComponent<PlayerManager>();
             pM.RpcShowScores();
@@ -102,7 +103,7 @@ public class GameManager : NetworkBehaviour {
 
     public void CheckIfWon(int id)
     {
-        PlayerManager pM = players[id].GetComponent<PlayerManager>();
+        PlayerManager pM = players[id - 1].GetComponent<PlayerManager>();
         if(pM.kills == maxKills)
             EndGame();
     }
