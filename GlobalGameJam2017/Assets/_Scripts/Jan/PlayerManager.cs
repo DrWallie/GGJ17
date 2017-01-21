@@ -27,7 +27,11 @@ public class PlayerManager : NetworkBehaviour {
     private void Awake()
     {
         health = maxHealth;
-        playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
+
+        if (PlayerPrefs.HasKey(MainMenuScript.namePref))
+            playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
+        else
+            playerName = "Mysterious Challenger";
 
         if(isLocalPlayer)
             cam.gameObject.SetActive(true);
