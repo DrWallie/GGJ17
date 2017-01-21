@@ -6,9 +6,24 @@ using UnityEngine.Networking;
 public class Bullet : NetworkBehaviour {
 
     [HideInInspector]
-    public int weaponIndex = - 1;
+    public int damage;
     [HideInInspector]
-    public int stance;
+    public int bounces;
+    [HideInInspector]
+    public float force;
 
-    
+    private void OnCollisionEnter(Collision c)
+    {
+        if (!isServer)
+            return;
+
+        if(c.transform.tag == "Player")
+        {
+            //deal damage
+            c.transform.GetComponent<PlayerManager>().RpcTakesDamage(damage);
+            //addforce
+        }
+
+        //check bounce
+    }
 }

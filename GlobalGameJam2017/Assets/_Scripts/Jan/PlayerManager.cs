@@ -27,15 +27,6 @@ public class PlayerManager : NetworkBehaviour {
     private void Awake()
     {
         health = maxHealth;
-
-        if (isLocalPlayer)
-        {
-            LocalGameManager.thisPlayer = this;
-            if (PlayerPrefs.HasKey(MainMenuScript.namePref))
-                playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
-            else
-                playerName = "Mysterious Challenger";
-        }
         playerCombat = GetComponent<PlayerCombat>();
         playerController = GetComponent<PlayerController>();
     }
@@ -44,13 +35,25 @@ public class PlayerManager : NetworkBehaviour {
 
     public void Start()
     {
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
         if (isLocalPlayer)
         {
+
+            LocalGameManager.thisPlayer = this;
+            if (PlayerPrefs.HasKey(MainMenuScript.namePref))
+                playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
+            else
+                playerName = "Mysterious Challenger";
             cam.enabled = true;
             //get ID based on how many players there are
-            GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+            
             thisID = allPlayers.Length;
+            print(thisID + " " + GameManager.thisManager.minPlayerCount);
         }
+
+        //hier zit een nare, nare bug
+        if (allPlayers.Length > GameManager.thisManager.minPlayerCount - 1)
+            ActivatePlayer(true);
 
         if (isServer)
         {
@@ -70,6 +73,18 @@ public class PlayerManager : NetworkBehaviour {
             LocalGameManager.thisManager.ShowScores(null, false);
     }
 
+    [ClientRpc]
+    public void RpcTakesDamage(int damage)
+    {
+        health -= damage;
+        print(health);
+        if (health <= 0)
+        {
+            health = 0;
+            CmdOnKill();
+        }
+    }
+
     [Command]
     public void CmdOnKill()
     {
@@ -86,6 +101,11 @@ public class PlayerManager : NetworkBehaviour {
 
     [ClientRpc]
     public void RpcActivatePlayer(bool enable)
+    {
+        ActivatePlayer(enable);
+    }
+
+    private void ActivatePlayer(bool enable)
     {
         playerCombat.enabled = enable;
         playerController.enabled = enable;

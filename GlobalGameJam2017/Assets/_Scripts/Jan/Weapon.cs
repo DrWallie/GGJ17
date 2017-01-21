@@ -11,7 +11,8 @@ public class WeaponStance {
     public float offsetX, offsetY;
     [Tooltip("the addforce the victim has when hit.")]
     public float forceBullets;
-    public bool bouncingBullets;
+    [Tooltip("How many times the bullets are allowed to bounce")]
+    public int bouncingBullets;
     public float speedBullets;
     public float lifeTimeBullets;
     public float timeBetweenBullets;
