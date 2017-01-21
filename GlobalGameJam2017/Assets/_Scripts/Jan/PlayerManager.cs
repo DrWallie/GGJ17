@@ -5,11 +5,20 @@ using UnityEngine.Networking;
 
 public class PlayerManager : NetworkBehaviour {
 
-    [HideInInspector]
+    [SyncVar]
     public int thisID;
+    private GameManager gameManager;
 
-    public override void OnStartLocalPlayer()
+    public void Start()
     {
-        FFA_Manager.thisManager.AddPlayer(transform);
+        //get ID based on how many players there are
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+        thisID = allPlayers.Length;
+
+        gameManager = GameManager.thisManager;
+        if (isServer)
+            gameManager.CmdAddToGameManager(thisID);
     }
 }
+
+       
