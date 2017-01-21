@@ -17,9 +17,14 @@ public class Player_SyncRot : NetworkBehaviour
     [SerializeField]
     private float lerpRate = 15;
 
+    void Start()
+    {
+        playerTransform = GetComponent<Transform>();
+        camTransform = GetComponentInChildren<Camera>().transform;
+    }
+
     void FIxedUpdate()
     {
-        //laat elke frame deze twee voids runnen.
         TransmitRotations();
         LerpRotation();
     }
@@ -28,13 +33,11 @@ public class Player_SyncRot : NetworkBehaviour
     {
         if (!isLocalPlayer)
         {
-            //als het een geconnecte player is dan word zijn rotation van zijn en cam en zijn caracter zelf tussen de huidige en de laatste sync ge lerpt (lerpen houd in dat je het object smooth tussen twee coordinaten laat bewegen).
             playerTransform.rotation = Quaternion.Lerp(playerTransform.rotation, syncPlayerRotation, Time.deltaTime * lerpRate);
             camTransform.rotation = Quaternion.Lerp(camTransform.rotation, syncCamRotation, Time.deltaTime * lerpRate);
         }
     }
 
-    //dit stuurt  de rotation van je players zijn caracter naar de server
     [Command]
     void CmdProvideRotationsToServer(Quaternion playerRot, Quaternion camRot)
     {
@@ -42,7 +45,6 @@ public class Player_SyncRot : NetworkBehaviour
         syncCamRotation = camRot;
     }
 
-    //dit transmit de huidige rotation van de player naar de command's void die dit naar de sever stuurt, dit word de nieuwe sync. 
     [ClientCallback]
     void TransmitRotations()
     {

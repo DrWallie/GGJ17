@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: df2b3e0b096e10a42b767d8620a0bf60
-timeCreated: 1485009931
+guid: 8390d7b11782ebb469f9bd4db90cc6d5
+timeCreated: 1485008410
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -10,6 +10,7 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: 3D_CutOut_Block2
+    6400000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -36,7 +37,7 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0

@@ -1,5 +1,7 @@
 fileFormatVersion: 2
-guid: 16b2afcd81ddc1148968cb9d45d63750
+guid: 0856db5f47a94cd4d9d96ea0a14f2043
+timeCreated: 1485006663
+licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -8,7 +10,7 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: 3D_HalfStairs_Block1
-    9500000: //RootNode
+    6400000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -33,9 +35,9 @@ ModelImporter:
     isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: 0
+    globalScale: 1
     meshCompression: 0
-    addColliders: 0
+    addColliders: 1
     importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
@@ -71,7 +73,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
