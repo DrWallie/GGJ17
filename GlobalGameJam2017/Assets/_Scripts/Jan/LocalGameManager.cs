@@ -38,7 +38,7 @@ public class LocalGameManager : MonoBehaviour {
         {
             ScorePlayer s = scoreBoard.scores[i];
             PlayerManager pM = pMs[i];
-            //do something with the name here
+            s.name.text = pM.playerName;
             s.score.text = pM.kills + "/" + pM.deaths;
         }
 

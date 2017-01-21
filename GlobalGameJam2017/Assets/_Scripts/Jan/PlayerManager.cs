@@ -13,6 +13,8 @@ public class PlayerManager : NetworkBehaviour {
         health,
         armor;
     public int maxHealth;
+    [SyncVar]
+    public string playerName;
 
     private GameManager gameManager;
 
@@ -25,6 +27,7 @@ public class PlayerManager : NetworkBehaviour {
     private void Awake()
     {
         health = maxHealth;
+        playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
 
         if(isLocalPlayer)
             cam.gameObject.SetActive(true);
