@@ -9,7 +9,11 @@ public class PlayerManager : NetworkBehaviour {
     [SyncVar]
     public int thisID,
         deaths,
-        kills;
+        kills,
+        health,
+        armor;
+    public int maxHealth;
+
     private GameManager gameManager;
 
     [HideInInspector]
@@ -20,6 +24,8 @@ public class PlayerManager : NetworkBehaviour {
 
     private void Awake()
     {
+        health = maxHealth;
+
         if(isLocalPlayer)
             cam.gameObject.SetActive(true);
         playerCombat = GetComponent<PlayerCombat>();
@@ -51,6 +57,7 @@ public class PlayerManager : NetworkBehaviour {
     [Command]
     public void CmdOnDeath()
     {
+        //instead of destroying try to disable it, since vital information is stored here.
         deaths++;
     }
 
@@ -68,6 +75,6 @@ public class PlayerManager : NetworkBehaviour {
             yield return new WaitForSeconds(Time.deltaTime);
         }
 
-        //this does not need to have consequences, you already do this in the gamemanager
+        //this does not need to have consequences, I already do this in the gamemanager
     }
 }
