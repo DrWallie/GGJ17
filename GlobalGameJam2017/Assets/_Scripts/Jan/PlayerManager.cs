@@ -31,9 +31,11 @@ public class PlayerManager : NetworkBehaviour {
         GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
         thisID = allPlayers.Length;
 
-        gameManager = GameManager.thisManager;
         if (isServer)
+        {
+            gameManager = GameManager.thisManager;
             gameManager.CmdAddToGameManager(thisID);
+        }
     }
 
     [Command]
