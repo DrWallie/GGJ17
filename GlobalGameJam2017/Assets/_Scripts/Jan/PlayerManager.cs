@@ -87,6 +87,8 @@ public class PlayerManager : NetworkBehaviour {
     [ClientRpc]
     public void RpcActivatePlayer(bool enable)
     {
+        if (!isLocalPlayer)
+            return;
         playerCombat.enabled = enable;
         playerController.enabled = enable;
     }
