@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(LocalGameManager))]
 public class GameManager : NetworkBehaviour {
 
     public static GameManager thisManager;
-    public List<GameObject> players = new List<GameObject>();
+    public List<GameObject> players = new List<GameObject>(); //niet getest of dit juist gevuld is als iemand disconnect
 
     #region Inspector Settings
 
-    public int maxGameTime = 8;
+    public int maxGameTimeInMinutes = 8;
     public int maxKills = 20;
     public int minPlayerCount = 2;
 
@@ -30,7 +31,7 @@ public class GameManager : NetworkBehaviour {
     public float timeLeft;
     private IEnumerator GameHandler()
     {
-        timeLeft = maxGameTime;
+        timeLeft = maxGameTimeInMinutes * 60;
         //to make sure enough players are in the game
         while (players.Count < minPlayerCount)
             yield return null;
@@ -39,16 +40,10 @@ public class GameManager : NetworkBehaviour {
         foreach(GameObject p in players)
         {
             PlayerManager pM = p.GetComponent<PlayerManager>();
-            pM.playerCombat.enabled = true;
-            pM.playerController.enabled = true;
+            pM.RpcActivatePlayer();
         }
 
-        while(maxGameTime > 0f) //DO NOT SYNCH THIS, THERE IS A PERFORMANCE REASON I ALSO DID THIS LOCALLY
-        {
-            timeLeft -= Time.deltaTime;
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
-
+        yield return new WaitForSeconds(timeLeft);
         //end game
         EndGame();
     }
@@ -56,7 +51,7 @@ public class GameManager : NetworkBehaviour {
     private void EndGame()
     {
         StopAllCoroutines();
-        RpcCheckFinalScores();
+        CheckFinalScores();
         //stop game
         //start game
         foreach (GameObject p in players)
@@ -67,12 +62,16 @@ public class GameManager : NetworkBehaviour {
         }
     }
 
-    [ClientRpc] //this allows it to be used on clients
-    private void RpcCheckFinalScores()
+    private void CheckFinalScores()
     {
         List<PlayerManager> pMs = GetScores();
-
-        //do something nice with this list
+        //do something nice with this list in playerManager
+        //the list goes from 0 = lowest to length = highest
+        for(int i = 0; i < pMs.Count; i++)
+        {
+            PlayerManager pM = pMs[i].GetComponent<PlayerManager>();
+            pM.RpcShowScores();
+        }
     }
 
     private List<PlayerManager> GetScores()
@@ -98,7 +97,6 @@ public class GameManager : NetworkBehaviour {
             if (!inserted) //this means that it is the best score yet
                 pMs.Add(pM);
         }
-
         return pMs;
     }
 
