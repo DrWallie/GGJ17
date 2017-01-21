@@ -75,8 +75,12 @@ public class PlayerManager : NetworkBehaviour {
     [ClientRpc]
     public void RpcTakesDamage(int damage)
     {
-        health -= damage;
-        print(health);
+        armor -= damage;
+        if (armor < 0)
+        {
+            health -= armor;
+            armor = 0;
+        }
         if (health <= 0)
         {
             health = 0;

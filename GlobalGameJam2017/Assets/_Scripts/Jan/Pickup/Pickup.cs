@@ -6,7 +6,21 @@ public abstract class Pickup : MonoBehaviour {
 
     public float timeToRespawn;
 
-    protected abstract void OnTriggerEnter(Collider c);
+    protected virtual void OnTriggerEnter(Collider c)
+    {
+        if (c.transform.tag == "Player")
+            PickupThis(c);
+    }
+
+    protected virtual void PickupThis(Collider c)
+    {
+        StartCoroutine(Respawn());
+        PlayerManager pM = c.GetComponent<PlayerManager>();
+        if (pM == LocalGameManager.thisPlayer)
+            AddPickupToPlayer(pM);
+    }
+
+    protected abstract void AddPickupToPlayer(PlayerManager pM);
 
     protected virtual IEnumerator Respawn()
     {
