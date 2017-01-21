@@ -70,7 +70,36 @@ public class GameManager : NetworkBehaviour {
     [ClientRpc] //this allows it to be used on clients
     private void RpcCheckFinalScores()
     {
+        List<PlayerManager> pMs = GetScores();
+
+        //do something nice with this list
+    }
+
+    private List<PlayerManager> GetScores()
+    {
         //show ordered list with player scores
+        List<PlayerManager> pMs = new List<PlayerManager>();
+        foreach (GameObject p in players)
+        {
+            PlayerManager pM = p.GetComponent<PlayerManager>();
+            if (pMs.Count == 0) //if list is empty
+            {
+                pMs.Add(pM);
+                continue;
+            }
+            bool inserted = false;
+            for (int i = 0; i < pMs.Count; i++)
+                if (pM.kills < pMs[i].kills)
+                {
+                    pMs.Insert(i, pM);
+                    inserted = true;
+                    break;
+                }
+            if (!inserted) //this means that it is the best score yet
+                pMs.Add(pM);
+        }
+
+        return pMs;
     }
 
     public void CheckIfWon(int id)
