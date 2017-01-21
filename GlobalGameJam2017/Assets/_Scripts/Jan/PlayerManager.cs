@@ -22,7 +22,7 @@ public class PlayerManager : NetworkBehaviour {
     public PlayerCombat playerCombat;
     [HideInInspector]
     public PlayerController playerController;
-    public Transform cam;
+    public Camera cam;
 
     private void Awake()
     {
@@ -31,7 +31,6 @@ public class PlayerManager : NetworkBehaviour {
         if (isLocalPlayer)
         {
             LocalGameManager.thisPlayer = this;
-            cam.gameObject.SetActive(true);
             if (PlayerPrefs.HasKey(MainMenuScript.namePref))
                 playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
             else
@@ -47,6 +46,7 @@ public class PlayerManager : NetworkBehaviour {
     {
         if (isLocalPlayer)
         {
+            cam.enabled = true;
             //get ID based on how many players there are
             GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
             thisID = allPlayers.Length;
@@ -87,8 +87,6 @@ public class PlayerManager : NetworkBehaviour {
     [ClientRpc]
     public void RpcActivatePlayer(bool enable)
     {
-        if (!isLocalPlayer)
-            return;
         playerCombat.enabled = enable;
         playerController.enabled = enable;
     }

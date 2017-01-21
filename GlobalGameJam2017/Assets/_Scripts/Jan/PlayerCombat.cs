@@ -137,6 +137,9 @@ public class PlayerCombat : NetworkBehaviour {
             offsetBullet);
         // Add velocity to the bullet
         bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * w.speedBullets;
+        Bullet b = bullet.GetComponent<Bullet>();
+        b.weaponIndex = equippedWeapon;
+        b.stance = dW.currentStance;
 
         //destroy after set time
         Destroy(bullet, w.lifeTimeBullets);
