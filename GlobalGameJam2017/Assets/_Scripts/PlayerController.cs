@@ -5,9 +5,10 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-public class PlayerController : MonoBehaviour
+public class FauxGrav : MonoBehaviour
 {
     public Transform cam;
+    public LayerMask ignoreMask;
     public float mouseXSens = 10f;
     public float mouseYSens = 12f;
     public bool clampVerticalRotation = true;
@@ -21,9 +22,9 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 3;
     public float secToJumpApex = .5f;
 
-    private float gravity, jumpVelocity;
+    float gravity, jumpVelocity;
 
-    private Vector3 surfaceNormal;
+    private Vector3 groundNormal;
     private Vector3 charNormal;
     private float distGround;
     private bool jumping = false;
@@ -39,6 +40,10 @@ public class PlayerController : MonoBehaviour
 
     private Transform charTransform;
     private Vector3 charPosOld;
+
+    [Range(16, 10000)]
+    public int orbDirectionCount = 16;
+    public int orbRayLenght = 10;
 
     private void Start()
     {
@@ -62,7 +67,7 @@ public class PlayerController : MonoBehaviour
         rigid.AddForce(-gravity * rigid.mass * charNormal);
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         LookRotation();
         if (jumping) return; // abort Update while jumping to a wall
@@ -71,8 +76,9 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
-            ray = new Ray(charTransform.position, charTransform.position + (charTransform.position - charPosOld).normalized * wallDetectRange);
-            if (Physics.Raycast(ray, out hit, wallDetectRange))// wall ahead?
+            Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange, Color.blue, 1f);
+            ray = new Ray(transform.position, (transform.position - charPosOld) * wallDetectRange);
+            if (Physics.Raycast(ray, out hit, wallDetectRange, ignoreMask))// wall ahead?
             { // yes: jump to wall
                 JumpToWall(hit.point, hit.normal);
             }
@@ -84,18 +90,28 @@ public class PlayerController : MonoBehaviour
 
         charTransform.Translate(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0, 0);
 
+        Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange, Color.blue, 1f);
+        ray = new Ray(transform.position, (transform.position - charPosOld));
+        if (Physics.Raycast(ray, out hit, wallDetectRange))// wall ahead?
+        { // yes: jump to wall
+            groundNormal = hit.normal;
+        }
+
+        Debug.DrawRay(charTransform.position, -charNormal);
         ray = new Ray(charTransform.position, -charNormal); //casts ray downwards
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(ray, out hit, groundedDistance, ignoreMask))//if (Physics.Raycast(ray, out hit, groundedDistance , ignoreMask))
         { // use the ray to update charNormal and isGrounded
-            isGrounded = hit.distance <= distGround + groundedDistance;
-            surfaceNormal = hit.normal;
+            //Debug.DrawRay(charTransform.position, -charNormal);
+            isGrounded = hit.distance <= distGround + groundedDistance; //if hit.distance is less than distance to ground - max distance to ground isGrounded = true
+            groundNormal = hit.normal;
         }
         else
         {
             isGrounded = false;
-            surfaceNormal = Vector3.up; // assume usual ground normal to avoid "falling forever"
+            groundNormal = SphereRay();
         }
-        charNormal = Vector3.Lerp(charNormal, surfaceNormal, lerpSpeed * Time.deltaTime);
+
+        charNormal = Vector3.Lerp(charNormal, groundNormal, lerpSpeed * Time.deltaTime);
 
         Vector3 myForward = Vector3.Cross(charTransform.right, charNormal); // find forward direction with new charNormal
 
@@ -106,8 +122,9 @@ public class PlayerController : MonoBehaviour
         charTransform.Translate(0, 0, Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime); //move the character forth/ back with Vertical axis:
 
         //Debug.DrawLine(charTransform.position, charTransform.position + (charTransform.position - charPosOld).normalized * wallDetectRange, Color.red);
+        //Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange);
 
-        charPosOld = charTransform.position;
+        charPosOld = transform.position;
     }
 
     private void JumpToWall(Vector3 point, Vector3 normal)
@@ -170,4 +187,50 @@ public class PlayerController : MonoBehaviour
         return q;
     }
 
+    //public float SphereRay()
+    public Vector3 SphereRay()
+    {
+        //var distances = new List<float>();
+        float shortestDist = orbRayLenght;
+        Vector3 closestHit = Vector3.zero;
+
+        foreach (var direction in GetSphereDirections(orbDirectionCount))
+        {
+            Debug.DrawRay(transform.position, direction * orbRayLenght, Color.red);
+
+            //Vector3.Distance(transform.position);
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, direction, out hit, orbRayLenght))
+            {
+                if (hit.distance <= shortestDist)
+                {
+                    shortestDist = hit.distance;
+                    //closestHit = hit.transform.position; DIT WAS JE FOUT MONGOOL
+                    closestHit = hit.normal;
+                }
+            }
+        }
+
+        return closestHit;
+        //return distances.Any() ? distances.Min() : rayLenght;
+    }
+
+    private Vector3[] GetSphereDirections(int numDirections)
+    {
+        var points = new Vector3[numDirections];
+        var inc = Mathf.PI * (3 - Mathf.Sqrt(5));
+        var off = 2f / numDirections;
+
+        foreach (var k in Enumerable.Range(0, numDirections))
+        {
+            var y = k * off - 1 + (off / 2);
+            var r = Mathf.Sqrt(1 - y * y);
+            var phi = k * inc;
+            var x = (float)(Mathf.Cos(phi) * r);
+            var z = (float)(Mathf.Sin(phi) * r);
+            points[k] = new Vector3(x, y, z);
+        }
+
+        return points;
+    }
 }
