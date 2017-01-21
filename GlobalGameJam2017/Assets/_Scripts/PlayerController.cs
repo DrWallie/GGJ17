@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(CapsuleCollider))]
-public class FauxGrav : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public Transform cam;
     public LayerMask ignoreMask;
