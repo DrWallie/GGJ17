@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: b8b396e4b46f74641a4d0842c8fa9195
-timeCreated: 1485004302
+guid: 8390d7b11782ebb469f9bd4db90cc6d5
+timeCreated: 1485008410
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,9 +9,8 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: 3D_Obstacle2
+    4300000: 3D_CutOut_Block2
     6400000: //RootNode
-    9500000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -74,7 +73,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
