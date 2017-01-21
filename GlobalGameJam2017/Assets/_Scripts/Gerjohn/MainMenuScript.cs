@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MainMenuScript : MonoBehaviour
 {
@@ -11,8 +12,9 @@ public class MainMenuScript : MonoBehaviour
         switch (i)
         {
             case 0:
-                //Play Game
-
+                //Open name selection, Play button
+                pages[0].SetActive(false);
+                pages[3].SetActive(true);
                 break;
             case 1:
                 //Options Menu
@@ -32,7 +34,12 @@ public class MainMenuScript : MonoBehaviour
                 //Close Options/Credits Pages
                 pages[1].SetActive(false);
                 pages[2].SetActive(false);
+                pages[3].SetActive(false);
                 pages[0].SetActive(true);
+                break;
+            case 5:
+                //Join the game
+                SceneManager.LoadScene(1);
                 break;
         }
     }
