@@ -16,9 +16,12 @@ public class PlayerManager : NetworkBehaviour {
     public PlayerCombat playerCombat;
     [HideInInspector]
     public PlayerController playerController;
+    public Transform cam;
 
     private void Awake()
     {
+        if(isLocalPlayer)
+            cam.gameObject.SetActive(true);
         playerCombat = GetComponent<PlayerCombat>();
         playerController = GetComponent<PlayerController>();
     }
