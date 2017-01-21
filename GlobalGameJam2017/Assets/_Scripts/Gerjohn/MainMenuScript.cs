@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class MainMenuScript : MonoBehaviour
 {
     public GameObject[] pages; //0 = Main Page, 1 = Options Page, 2 = Credits Page
+    public InputField inputName;
+    public static string namePref = "PlayerName";
 
     public void ButtonInput(int i)
     {
@@ -42,5 +45,16 @@ public class MainMenuScript : MonoBehaviour
                 SceneManager.LoadScene(1);
                 break;
         }
+    }
+
+    private void Awake()
+    {
+        if(PlayerPrefs.HasKey(namePref))
+            inputName.text = PlayerPrefs.GetString(namePref);
+    }
+
+    public void SaveName()
+    {
+        PlayerPrefs.SetString(namePref, inputName.text);
     }
 }
