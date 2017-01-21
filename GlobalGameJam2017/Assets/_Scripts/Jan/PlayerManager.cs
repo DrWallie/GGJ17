@@ -28,13 +28,14 @@ public class PlayerManager : NetworkBehaviour {
     {
         health = maxHealth;
 
-        if (PlayerPrefs.HasKey(MainMenuScript.namePref))
-            playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
-        else
-            playerName = "Mysterious Challenger";
-
-        if(isLocalPlayer)
+        if (isLocalPlayer)
+        {
             cam.gameObject.SetActive(true);
+            if (PlayerPrefs.HasKey(MainMenuScript.namePref))
+                playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
+            else
+                playerName = "Mysterious Challenger";
+        }
         playerCombat = GetComponent<PlayerCombat>();
         playerController = GetComponent<PlayerController>();
     }
@@ -43,9 +44,12 @@ public class PlayerManager : NetworkBehaviour {
 
     public void Start()
     {
-        //get ID based on how many players there are
-        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
-        thisID = allPlayers.Length;
+        if (isLocalPlayer)
+        {
+            //get ID based on how many players there are
+            GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+            thisID = allPlayers.Length;
+        }
 
         if (isServer)
         {
@@ -56,6 +60,9 @@ public class PlayerManager : NetworkBehaviour {
 
     private void Update()
     {
+        if (!isLocalPlayer)
+            return;
+
         if (Input.GetButtonDown("LShift"))
             ShowScores();
         else if (Input.GetButtonUp("LShift"))

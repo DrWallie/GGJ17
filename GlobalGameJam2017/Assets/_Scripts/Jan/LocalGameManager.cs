@@ -34,12 +34,14 @@ public class LocalGameManager : MonoBehaviour {
         scoreBoard.board.gameObject.SetActive(enable);
         if (!(pMs != null)) //because unity will give errors otherwise
             return;
-        for(int i = 0; i < pMs.Count; i++)
+        int _i = 0;
+        for(int i = pMs.Count - 1; i >= 0; i--)
         {
             ScorePlayer s = scoreBoard.scores[i];
-            PlayerManager pM = pMs[i];
+            PlayerManager pM = pMs[_i];
             s.name.text = pM.playerName;
             s.score.text = pM.kills + "/" + pM.deaths;
+            _i++;
         }
 
         //after that only empty the "empty"
