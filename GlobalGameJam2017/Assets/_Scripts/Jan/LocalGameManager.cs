@@ -8,6 +8,7 @@ public class LocalGameManager : MonoBehaviour {
 
     public static LocalGameManager thisManager;
     public ScoreBoard scoreBoard;
+    public static PlayerManager thisPlayer;
 
     private void Awake()
     {

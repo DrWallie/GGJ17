@@ -72,6 +72,13 @@ public class PlayerCombat : NetworkBehaviour {
 
     #region Weapon Functions
 
+    public void AddAmmo(int addedAmmo)
+    {
+        int newValue = weapons[equippedWeapon].ammo + addedAmmo;
+        int maxAmmo = weapons[equippedWeapon].maxAmmo;
+        weapons[equippedWeapon].ammo = (newValue > maxAmmo) ? maxAmmo: newValue;
+    }
+
     private void SwitchStances(float wheelInput)
     {
         DoubleWeapon dW = weapons[equippedWeapon];

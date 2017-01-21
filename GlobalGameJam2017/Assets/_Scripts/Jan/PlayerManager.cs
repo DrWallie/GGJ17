@@ -30,6 +30,7 @@ public class PlayerManager : NetworkBehaviour {
 
         if (isLocalPlayer)
         {
+            LocalGameManager.thisPlayer = this;
             cam.gameObject.SetActive(true);
             if (PlayerPrefs.HasKey(MainMenuScript.namePref))
                 playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
