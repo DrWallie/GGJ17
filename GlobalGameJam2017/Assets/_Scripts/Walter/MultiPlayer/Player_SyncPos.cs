@@ -8,11 +8,17 @@ public class Player_SyncPos : NetworkBehaviour
     private Vector3 syncPos;
 
     [SerializeField]
-    Transform myTransform;
+    private Transform myTransform;
+
     [SerializeField]
-    float lerpRate = 15;
+    private float lerpRate = 15;
 
     //Update is called once per frame
+    void Start()
+    {
+        myTransform = GetComponent<Transform>();
+    }
+
     void FixedUpdate()
     {
         TransmitPosition();
