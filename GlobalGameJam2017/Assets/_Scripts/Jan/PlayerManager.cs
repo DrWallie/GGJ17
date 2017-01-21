@@ -3,13 +3,68 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(PlayerCombat), typeof(PlayerController))]
 public class PlayerManager : NetworkBehaviour {
 
-    [HideInInspector]
-    public int thisID;
+    [SyncVar]
+    public int thisID,
+        deaths,
+        kills;
+    private GameManager gameManager;
 
-    public override void OnStartLocalPlayer()
+    [HideInInspector]
+    public PlayerCombat playerCombat;
+    [HideInInspector]
+    public PlayerController playerController;
+
+    private void Awake()
     {
-        FFA_Manager.thisManager.AddPlayer(transform);
+        playerCombat = GetComponent<PlayerCombat>();
+        playerController = GetComponent<PlayerController>();
+    }
+
+    #region Game Manager
+
+    public void Start()
+    {
+        //get ID based on how many players there are
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+        thisID = allPlayers.Length;
+
+        if (isServer)
+        {
+            gameManager = GameManager.thisManager;
+            gameManager.CmdAddToGameManager(thisID);
+        }
+    }
+
+    [Command]
+    public void CmdOnKill()
+    {
+        kills++;
+        gameManager.CheckIfWon(thisID);
+    }
+
+    [Command]
+    public void CmdOnDeath()
+    {
+        deaths++;
+    }
+
+    #endregion
+
+    //this is purely visual for the clock locally
+    public IEnumerator Timer(int maxTime)
+    {
+        float timeLeft = maxTime;
+
+        while (timeLeft > 0f)
+        {
+            //show something visual
+            timeLeft -= Time.deltaTime;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        //this does not need to have consequences, you already do this in the gamemanager
     }
 }
