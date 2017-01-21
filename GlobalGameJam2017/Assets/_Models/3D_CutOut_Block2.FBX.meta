@@ -1,11 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: 16b2afcd81ddc1148968cb9d45d63750
-timeCreated: 1485007765
-=======
-guid: 0856db5f47a94cd4d9d96ea0a14f2043
-timeCreated: 1485006663
->>>>>>> 462f9569b13dec7c9cdd53f0028259aa3694594d
+guid: df2b3e0b096e10a42b767d8620a0bf60
+timeCreated: 1485009931
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -14,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: 3D_HalfStairs_Block1
+    4300000: 3D_CutOut_Block2
   materials:
     importMaterials: 1
     materialName: 0
