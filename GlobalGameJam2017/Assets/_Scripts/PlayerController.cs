@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     [Space(10)]
     public float moveSpeed = 6;
     public float lerpSpeed = 10;
-    private float groundedDistance = 0.2f;
+    public float groundedDistance = 1.25f;
     public float wallDetectRange = 2;
     [Space(10)]
     public float jumpHeight = 3;
@@ -41,13 +41,13 @@ public class PlayerController : MonoBehaviour
     private Transform charTransform;
     private Vector3 charPosOld;
 
-    [Range(16, 10000)]
-    public int orbDirectionCount = 16;
+    [Range(16, 1440)]
+    public int orbDirectionCount = 360;
     public int orbRayLenght = 10;
 
     private void Start()
     {
-        cam = GameObject.FindGameObjectWithTag("MainCamera").transform;
+        cam = GetComponentInChildren<Camera>().transform;
         cam.SetParent(transform);
         charNormal = transform.up; // normal starts as character up direction
         charTransform = transform;
@@ -77,7 +77,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange, Color.blue, 1f);
-            ray = new Ray(transform.position, (transform.position - charPosOld) * wallDetectRange);
+            //ray = new Ray(transform.position, (transform.position - charPosOld) * wallDetectRange);
+            ray = new Ray(transform.position, transform.position - charPosOld);
             if (Physics.Raycast(ray, out hit, wallDetectRange, ignoreMask))// wall ahead?
             { // yes: jump to wall
                 JumpToWall(hit.point, hit.normal);
@@ -88,28 +89,34 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        charTransform.Translate(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0, 0);
+        //charTransform.Translate(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0, 0);
 
-        Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange, Color.blue, 1f);
-        ray = new Ray(transform.position, (transform.position - charPosOld));
-        if (Physics.Raycast(ray, out hit, wallDetectRange))// wall ahead?
-        { // yes: jump to wall
-            groundNormal = hit.normal;
-        }
+        //Debug.DrawLine(transform.position, transform.position + (transform.position - charPosOld).normalized, Color.blue);
+        //Debug.DrawRay(transform.position, new Vector3(Input.GetAxis("Horizontal"), rigid.velocity.y, Input.GetAxis("Vertical")), Color.blue);
 
-        Debug.DrawRay(charTransform.position, -charNormal);
-        ray = new Ray(charTransform.position, -charNormal); //casts ray downwards
-        if (Physics.Raycast(ray, out hit, groundedDistance, ignoreMask))//if (Physics.Raycast(ray, out hit, groundedDistance , ignoreMask))
+        Debug.DrawRay(transform.position, -transform.up * groundedDistance);
+        ray = new Ray(transform.position, -transform.up); //casts ray downwards
+        if (Physics.Raycast(ray, out hit, distGround + groundedDistance, ~ignoreMask))//if (Physics.Raycast(ray, out hit, groundedDistance , ignoreMask))
         { // use the ray to update charNormal and isGrounded
             //Debug.DrawRay(charTransform.position, -charNormal);
             isGrounded = hit.distance <= distGround + groundedDistance; //if hit.distance is less than distance to ground - max distance to ground isGrounded = true
+            isGrounded = true;
             groundNormal = hit.normal;
         }
         else
         {
+            //print(charTransform.position);
             isGrounded = false;
             groundNormal = SphereRay();
         }
+
+        Debug.DrawRay(transform.position, (transform.position - charPosOld).normalized, Color.yellow);
+        ray = new Ray(transform.position, (transform.position - charPosOld).normalized);
+        if (Physics.Raycast(ray, out hit, wallDetectRange))// wall ahead?   
+        { // yes: jump to wall
+            groundNormal = hit.normal;
+        }
+        charPosOld = transform.position;
 
         charNormal = Vector3.Lerp(charNormal, groundNormal, lerpSpeed * Time.deltaTime);
 
@@ -119,12 +126,12 @@ public class PlayerController : MonoBehaviour
 
         charTransform.rotation = Quaternion.Lerp(charTransform.rotation, targetRot, lerpSpeed * Time.deltaTime);
 
-        charTransform.Translate(0, 0, Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime); //move the character forth/ back with Vertical axis:
+        charTransform.Translate(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0, Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime); //move the character forth/ back with Vertical axis:
 
         //Debug.DrawLine(charTransform.position, charTransform.position + (charTransform.position - charPosOld).normalized * wallDetectRange, Color.red);
         //Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange);
 
-        charPosOld = transform.position;
+        //charPosOld = transform.position;
     }
 
     private void JumpToWall(Vector3 point, Vector3 normal)
