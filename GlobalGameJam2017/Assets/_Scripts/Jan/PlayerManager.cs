@@ -61,6 +61,19 @@ public class PlayerManager : NetworkBehaviour {
         deaths++;
     }
 
+    [ClientRpc]
+    public void RpcActivatePlayer()
+    {
+        playerCombat.enabled = true;
+        playerController.enabled = true;
+    }
+
+    [ClientRpc]
+    public void RpcShowScores(int yourRanking)
+    {
+        print(yourRanking); //I somehow cant send classes so this will have to do
+    }
+
     #endregion
 
     //this is purely visual for the clock locally
