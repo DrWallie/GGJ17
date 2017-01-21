@@ -54,6 +54,14 @@ public class PlayerManager : NetworkBehaviour {
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetButtonDown("LShift"))
+            ShowScores();
+        else if (Input.GetButtonUp("LShift"))
+            LocalGameManager.thisManager.ShowScores(null, false);
+    }
+
     [Command]
     public void CmdOnKill()
     {
@@ -69,14 +77,19 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     [ClientRpc]
-    public void RpcActivatePlayer()
+    public void RpcActivatePlayer(bool enable)
     {
-        playerCombat.enabled = true;
-        playerController.enabled = true;
+        playerCombat.enabled = enable;
+        playerController.enabled = enable;
     }
 
     [ClientRpc]
     public void RpcShowScores()
+    {
+        ShowScores();
+    }
+
+    private void ShowScores()
     {
         if (!isLocalPlayer)
             return;

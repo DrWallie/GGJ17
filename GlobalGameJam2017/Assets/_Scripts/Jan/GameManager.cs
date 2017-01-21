@@ -40,7 +40,7 @@ public class GameManager : NetworkBehaviour {
         foreach(GameObject p in players)
         {
             PlayerManager pM = p.GetComponent<PlayerManager>();
-            pM.RpcActivatePlayer();
+            pM.RpcActivatePlayer(true);
         }
 
         yield return new WaitForSeconds(timeLeft);
@@ -51,15 +51,15 @@ public class GameManager : NetworkBehaviour {
     private void EndGame()
     {
         StopAllCoroutines();
-        CheckFinalScores();
+        
         //stop game
-        //start game
         foreach (GameObject p in players)
         {
             PlayerManager pM = p.GetComponent<PlayerManager>();
-            pM.playerCombat.enabled = false;
-            pM.playerController.enabled = false;
+            pM.RpcActivatePlayer(false);
         }
+
+        CheckFinalScores();
     }
 
     private void CheckFinalScores()

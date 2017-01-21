@@ -42,5 +42,13 @@ public class LocalGameManager : MonoBehaviour {
             s.score.text = pM.kills + "/" + pM.deaths;
         }
 
+        //after that only empty the "empty"
+
+        for (int i = pMs.Count; i < scoreBoard.scores.Count; i++)
+        {
+            ScorePlayer s = scoreBoard.scores[i];
+            s.name.text = "";
+            s.score.text = "";
+        }
     }
 }
