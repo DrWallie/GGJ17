@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/_Scenes/GerjohnTest.unity
+- path: Assets/_Scenes/Walter/Walter_Menu.unity
   isLoaded: 1
   isActive: 1

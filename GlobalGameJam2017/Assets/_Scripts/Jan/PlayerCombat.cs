@@ -119,6 +119,9 @@ public class PlayerCombat : NetworkBehaviour {
     [Command]
     private void CmdFireWeapon()
     {
+        if (!mayFire)
+            return;
+        mayFire = false;
         DoubleWeapon dW = weapons[equippedWeapon];
         WeaponStance w = dW.stances[dW.currentStance];
 
@@ -137,12 +140,17 @@ public class PlayerCombat : NetworkBehaviour {
             offsetBullet);
         // Add velocity to the bullet
         bullet.GetComponent<Rigidbody>().velocity = bullet.transform.forward * w.speedBullets;
+        Bullet b = bullet.GetComponent<Bullet>();
+        b.damage = w.damage;
+        b.bounces = w.bouncingBullets;
+        b.force = w.forceBullets;
 
-        //destroy after set time
-        Destroy(bullet, w.lifeTimeBullets);
 
         // Spawn the bullet on the Clients
         NetworkServer.Spawn(bullet);
+
+        //destroy after set time
+        Destroy(bullet, w.lifeTimeBullets);
 
         //remove ammo
         dW.ammo -= w.bulletsPerShot;
@@ -155,7 +163,6 @@ public class PlayerCombat : NetworkBehaviour {
     //to make sure you dont fire a million bullets per second
     private IEnumerator timeBetweenAutomaticFire()
     {
-        mayFire = false;
         DoubleWeapon dW = weapons[equippedWeapon];
         yield return new WaitForSeconds(
             dW.stances[dW.currentStance].timeBetweenBullets);

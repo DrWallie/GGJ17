@@ -22,21 +22,11 @@ public class PlayerManager : NetworkBehaviour {
     public PlayerCombat playerCombat;
     [HideInInspector]
     public PlayerController playerController;
-    public Transform cam;
+    public Camera cam;
 
     private void Awake()
     {
         health = maxHealth;
-
-        if (isLocalPlayer)
-        {
-            LocalGameManager.thisPlayer = this;
-            cam.gameObject.SetActive(true);
-            if (PlayerPrefs.HasKey(MainMenuScript.namePref))
-                playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
-            else
-                playerName = "Mysterious Challenger";
-        }
         playerCombat = GetComponent<PlayerCombat>();
         playerController = GetComponent<PlayerController>();
     }
@@ -45,12 +35,24 @@ public class PlayerManager : NetworkBehaviour {
 
     public void Start()
     {
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
         if (isLocalPlayer)
         {
+
+            LocalGameManager.thisPlayer = this;
+            if (PlayerPrefs.HasKey(MainMenuScript.namePref))
+                playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
+            else
+                playerName = "Mysterious Challenger";
+            cam.enabled = true;
             //get ID based on how many players there are
-            GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+            
             thisID = allPlayers.Length;
         }
+
+        //hier zit een nare, nare bug
+        if (allPlayers.Length > GameManager.thisManager.minPlayerCount - 1)
+            ActivatePlayer(true);
 
         if (isServer)
         {
@@ -70,6 +72,22 @@ public class PlayerManager : NetworkBehaviour {
             LocalGameManager.thisManager.ShowScores(null, false);
     }
 
+    [ClientRpc]
+    public void RpcTakesDamage(int damage)
+    {
+        armor -= damage;
+        if (armor < 0)
+        {
+            health -= armor;
+            armor = 0;
+        }
+        if (health <= 0)
+        {
+            health = 0;
+            CmdOnDeath();
+        }
+    }
+
     [Command]
     public void CmdOnKill()
     {
@@ -87,8 +105,11 @@ public class PlayerManager : NetworkBehaviour {
     [ClientRpc]
     public void RpcActivatePlayer(bool enable)
     {
-        if (!isLocalPlayer)
-            return;
+        ActivatePlayer(enable);
+    }
+
+    private void ActivatePlayer(bool enable)
+    {
         playerCombat.enabled = enable;
         playerController.enabled = enable;
     }

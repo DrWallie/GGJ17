@@ -7,17 +7,10 @@ public class PickupWeapon : Pickup {
     public int thisWeaponIndex;
     public int ammoRestored;
 
-    protected override void OnTriggerEnter(Collider c)
+    protected override void AddPickupToPlayer(PlayerManager pM)
     {
-        if (c.transform.tag == "Player") {
-            PlayerManager p = c.GetComponent<PlayerManager>();
-            if (p == LocalGameManager.thisPlayer)
-            {
-                PlayerCombat pC = p.playerCombat;
-                pC.EquipWeapon(thisWeaponIndex);
-                pC.AddAmmo(ammoRestored);
-                StartCoroutine(Respawn());
-            }
-        }
+        PlayerCombat pC = pM.playerCombat;
+        pC.EquipWeapon(thisWeaponIndex);
+        pC.AddAmmo(ammoRestored);
     }
 }

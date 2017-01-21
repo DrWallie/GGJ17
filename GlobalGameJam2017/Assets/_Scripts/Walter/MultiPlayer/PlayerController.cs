@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
         charPosOld = transform.position;
         col = GetComponent<CapsuleCollider>();
         rigid = GetComponent<Rigidbody>();
-        rigid.freezeRotation = true;
+        rigid.freezeRotation = true; //feezes rotations
 
         gravity = (2 * jumpHeight) / Mathf.Pow(secToJumpApex, 2);
         jumpVelocity = Mathf.Abs(gravity) * secToJumpApex;
@@ -77,7 +77,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown("Jump"))
         {
             Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange, Color.blue, 1f);
-            //ray = new Ray(transform.position, (transform.position - charPosOld) * wallDetectRange);
             ray = new Ray(transform.position, transform.position - charPosOld);
             if (Physics.Raycast(ray, out hit, wallDetectRange, ignoreMask))// wall ahead?
             { // yes: jump to wall
@@ -89,23 +88,16 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        //charTransform.Translate(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0, 0);
-
-        //Debug.DrawLine(transform.position, transform.position + (transform.position - charPosOld).normalized, Color.blue);
-        //Debug.DrawRay(transform.position, new Vector3(Input.GetAxis("Horizontal"), rigid.velocity.y, Input.GetAxis("Vertical")), Color.blue);
-
         Debug.DrawRay(transform.position, -transform.up * groundedDistance);
         ray = new Ray(transform.position, -transform.up); //casts ray downwards
         if (Physics.Raycast(ray, out hit, distGround + groundedDistance, ~ignoreMask))//if (Physics.Raycast(ray, out hit, groundedDistance , ignoreMask))
         { // use the ray to update charNormal and isGrounded
-            //Debug.DrawRay(charTransform.position, -charNormal);
             isGrounded = hit.distance <= distGround + groundedDistance; //if hit.distance is less than distance to ground - max distance to ground isGrounded = true
             isGrounded = true;
             groundNormal = hit.normal;
         }
         else
         {
-            //print(charTransform.position);
             isGrounded = false;
             groundNormal = SphereRay();
         }
@@ -127,11 +119,6 @@ public class PlayerController : MonoBehaviour
         charTransform.rotation = Quaternion.Lerp(charTransform.rotation, targetRot, lerpSpeed * Time.deltaTime);
 
         charTransform.Translate(Input.GetAxis("Horizontal") * moveSpeed * Time.deltaTime, 0, Input.GetAxis("Vertical") * moveSpeed * Time.deltaTime); //move the character forth/ back with Vertical axis:
-
-        //Debug.DrawLine(charTransform.position, charTransform.position + (charTransform.position - charPosOld).normalized * wallDetectRange, Color.red);
-        //Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange);
-
-        //charPosOld = transform.position;
     }
 
     private void JumpToWall(Vector3 point, Vector3 normal)
