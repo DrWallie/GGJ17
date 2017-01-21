@@ -69,9 +69,41 @@ public class PlayerManager : NetworkBehaviour {
     }
 
     [ClientRpc]
-    public void RpcShowScores(int yourRanking)
+    public void RpcShowScores()
     {
-        print(yourRanking); //I somehow cant send classes so this will have to do
+        if (!isLocalPlayer)
+            return;
+
+        List<PlayerManager> scores = GetScores();
+        LocalGameManager.thisManager.ShowScores(scores, true); //send the data to the lgm to be shown in the menu
+    }
+
+    private List<PlayerManager> GetScores()
+    {
+        //show ordered list with player scores
+        GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
+        List<PlayerManager> pMs = new List<PlayerManager>();
+        foreach (GameObject p in allPlayers)
+        {
+            PlayerManager pM = p.GetComponent<PlayerManager>();
+            if (pMs.Count == 0) //if list is empty
+            {
+                pMs.Add(pM);
+                continue;
+            }
+            bool inserted = false;
+            for (int i = 0; i < pMs.Count; i++)
+                if (pM.kills < pMs[i].kills)
+                {
+                    pMs.Insert(i, pM);
+                    inserted = true;
+                    break;
+                }
+            if (!inserted) //this means that it is the best score yet
+                pMs.Add(pM);
+        }
+
+        return pMs;
     }
 
     #endregion

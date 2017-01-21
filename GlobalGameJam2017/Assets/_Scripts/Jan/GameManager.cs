@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+[RequireComponent(typeof(LocalGameManager))]
 public class GameManager : NetworkBehaviour {
 
     public static GameManager thisManager;
@@ -42,11 +43,7 @@ public class GameManager : NetworkBehaviour {
             pM.RpcActivatePlayer();
         }
 
-        while(timeLeft > 0f) //DO NOT SYNC THIS, THERE IS A PERFORMANCE REASON I ALSO DID THIS LOCALLY
-        {
-            timeLeft -= Time.deltaTime;
-            yield return new WaitForSeconds(Time.deltaTime);
-        }
+        yield return new WaitForSeconds(timeLeft);
         //end game
         EndGame();
     }
@@ -73,7 +70,7 @@ public class GameManager : NetworkBehaviour {
         for(int i = 0; i < pMs.Count; i++)
         {
             PlayerManager pM = pMs[i].GetComponent<PlayerManager>();
-            pM.RpcShowScores(i);
+            pM.RpcShowScores();
         }
     }
 
