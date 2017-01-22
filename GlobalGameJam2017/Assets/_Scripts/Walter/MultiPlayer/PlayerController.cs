@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Transform cam;
-    public LayerMask ignoreMask;
+    public LayerMask layersToIgnore;
     public float mouseXSens = 10f;
     public float mouseYSens = 12f;
     public bool clampVerticalRotation = true;
@@ -76,21 +76,15 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
-            Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange, Color.blue, 1f);
-            ray = new Ray(transform.position, transform.position - charPosOld);
-            if (Physics.Raycast(ray, out hit, wallDetectRange, ignoreMask))// wall ahead?
-            { // yes: jump to wall
-                JumpToWall(hit.point, hit.normal);
-            }
-            else if (isGrounded)
+            if (isGrounded)
             { // no: if grounded, jump up
                 rigid.velocity += jumpVelocity * charNormal;
             }
         }
 
-        Debug.DrawRay(transform.position, -transform.up * groundedDistance);
-        ray = new Ray(transform.position, -transform.up); //casts ray downwards
-        if (Physics.Raycast(ray, out hit, distGround + groundedDistance, ~ignoreMask))//if (Physics.Raycast(ray, out hit, groundedDistance , ignoreMask))
+        Debug.DrawRay(transform.position + transform.up, -transform.up * groundedDistance);
+        ray = new Ray(transform.position + transform.up, -transform.up); //casts ray downwards
+        if (Physics.Raycast(ray, out hit, distGround + groundedDistance, ~layersToIgnore))//if (Physics.Raycast(ray, out hit, groundedDistance , layersToIgnore))
         { // use the ray to update charNormal and isGrounded
             isGrounded = hit.distance <= distGround + groundedDistance; //if hit.distance is less than distance to ground - max distance to ground isGrounded = true
             isGrounded = true;
@@ -102,9 +96,9 @@ public class PlayerController : MonoBehaviour
             groundNormal = SphereRay();
         }
 
-        Debug.DrawRay(transform.position, (transform.position - charPosOld).normalized, Color.yellow);
-        ray = new Ray(transform.position, (transform.position - charPosOld).normalized);
-        if (Physics.Raycast(ray, out hit, wallDetectRange))// wall ahead?   
+        Debug.DrawRay(transform.position + transform.up, (transform.position - charPosOld).normalized, Color.yellow);
+        ray = new Ray(transform.position + transform.up, (transform.position - charPosOld).normalized);
+        if (Physics.Raycast(ray, out hit, wallDetectRange, ~layersToIgnore))// wall ahead?   
         { // yes: jump to wall
             groundNormal = hit.normal;
         }
@@ -194,7 +188,7 @@ public class PlayerController : MonoBehaviour
 
             //Vector3.Distance(transform.position);
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, direction, out hit, orbRayLenght))
+            if (Physics.Raycast(transform.position, direction, out hit, orbRayLenght, ~layersToIgnore))
             {
                 if (hit.distance <= shortestDist)
                 {
