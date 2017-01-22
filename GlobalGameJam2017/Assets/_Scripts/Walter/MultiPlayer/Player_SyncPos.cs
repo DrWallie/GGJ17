@@ -2,14 +2,13 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-[NetworkSettings(channel = 0, sendInterval = 0.016f)]
 public class Player_SyncPos : NetworkBehaviour
 {
     [SyncVar]
     private Vector3 syncPos;
 
     [SerializeField]
-    private Transform playerTransform;
+    private Transform myTransform;
 
     [SerializeField]
     private float lerpRate = 15;
@@ -17,7 +16,7 @@ public class Player_SyncPos : NetworkBehaviour
     //Update is called once per frame
     void Start()
     {
-        playerTransform = GetComponent<Transform>();
+        myTransform = GetComponent<Transform>();
     }
 
     void FixedUpdate()
@@ -30,7 +29,7 @@ public class Player_SyncPos : NetworkBehaviour
     {
         if (!isLocalPlayer)
         {
-            playerTransform.position = Vector3.Lerp(playerTransform.position, syncPos, Time.deltaTime * lerpRate);// * lerpRate);
+            myTransform.position = Vector3.Lerp(myTransform.position, syncPos, Time.deltaTime * lerpRate);
         }
     }
 
@@ -45,7 +44,7 @@ public class Player_SyncPos : NetworkBehaviour
     {
         if (isLocalPlayer)
         {
-            CmdProvidePositionToServer(playerTransform.position);
+            CmdProvidePositionToServer(myTransform.position);
         }
     }
 }

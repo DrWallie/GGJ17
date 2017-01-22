@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public Transform cam;
-    public LayerMask layersToIgnore;
+    public LayerMask ignoreMask;
     public float mouseXSens = 10f;
     public float mouseYSens = 12f;
     public bool clampVerticalRotation = true;
@@ -84,11 +84,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.DrawRay(transform.position + transform.up, -transform.up * groundedDistance);
         ray = new Ray(transform.position + transform.up, -transform.up); //casts ray downwards
-<<<<<<< HEAD
         if (Physics.Raycast(ray, out hit, distGround + groundedDistance, ~ignoreMask))//if (Physics.Raycast(ray, out hit, groundedDistance , ignoreMask))
-=======
-        if (Physics.Raycast(ray, out hit, distGround + groundedDistance, ~layersToIgnore))//if (Physics.Raycast(ray, out hit, groundedDistance , layersToIgnore))
->>>>>>> 3e35b95bfd9a121504aecb212a38272a17837cf5
         { // use the ray to update charNormal and isGrounded
             isGrounded = hit.distance <= distGround + groundedDistance; //if hit.distance is less than distance to ground - max distance to ground isGrounded = true
             isGrounded = true;
@@ -102,11 +98,7 @@ public class PlayerController : MonoBehaviour
 
         Debug.DrawRay(transform.position + transform.up, (transform.position - charPosOld).normalized, Color.yellow);
         ray = new Ray(transform.position + transform.up, (transform.position - charPosOld).normalized);
-<<<<<<< HEAD
         if (Physics.Raycast(ray, out hit, wallDetectRange))// wall ahead?   
-=======
-        if (Physics.Raycast(ray, out hit, wallDetectRange, ~layersToIgnore))// wall ahead?   
->>>>>>> 3e35b95bfd9a121504aecb212a38272a17837cf5
         { // yes: jump to wall
             groundNormal = hit.normal;
         }
@@ -196,7 +188,7 @@ public class PlayerController : MonoBehaviour
 
             //Vector3.Distance(transform.position);
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, direction, out hit, orbRayLenght, ~layersToIgnore))
+            if (Physics.Raycast(transform.position, direction, out hit, orbRayLenght))
             {
                 if (hit.distance <= shortestDist)
                 {
