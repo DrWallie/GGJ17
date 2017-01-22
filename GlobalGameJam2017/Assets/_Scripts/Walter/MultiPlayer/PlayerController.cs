@@ -76,20 +76,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
-            Debug.DrawRay(transform.position, (transform.position - charPosOld) * wallDetectRange, Color.blue, 1f);
-            ray = new Ray(transform.position, transform.position - charPosOld);
-            if (Physics.Raycast(ray, out hit, wallDetectRange, ignoreMask))// wall ahead?
-            { // yes: jump to wall
-                JumpToWall(hit.point, hit.normal);
-            }
-            else if (isGrounded)
+            if (isGrounded)
             { // no: if grounded, jump up
                 rigid.velocity += jumpVelocity * charNormal;
             }
         }
 
-        Debug.DrawRay(transform.position, -transform.up * groundedDistance);
-        ray = new Ray(transform.position, -transform.up); //casts ray downwards
+        Debug.DrawRay(transform.position + transform.up, -transform.up * groundedDistance);
+        ray = new Ray(transform.position + transform.up, -transform.up); //casts ray downwards
         if (Physics.Raycast(ray, out hit, distGround + groundedDistance, ~ignoreMask))//if (Physics.Raycast(ray, out hit, groundedDistance , ignoreMask))
         { // use the ray to update charNormal and isGrounded
             isGrounded = hit.distance <= distGround + groundedDistance; //if hit.distance is less than distance to ground - max distance to ground isGrounded = true
@@ -102,8 +96,8 @@ public class PlayerController : MonoBehaviour
             groundNormal = SphereRay();
         }
 
-        Debug.DrawRay(transform.position, (transform.position - charPosOld).normalized, Color.yellow);
-        ray = new Ray(transform.position, (transform.position - charPosOld).normalized);
+        Debug.DrawRay(transform.position + transform.up, (transform.position - charPosOld).normalized, Color.yellow);
+        ray = new Ray(transform.position + transform.up, (transform.position - charPosOld).normalized);
         if (Physics.Raycast(ray, out hit, wallDetectRange))// wall ahead?   
         { // yes: jump to wall
             groundNormal = hit.normal;

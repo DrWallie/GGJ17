@@ -6,11 +6,23 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: RailingLeft
+    100004: RailingRight
     400000: //RootNode
+    400002: RailingLeft
+    400004: RailingRight
     2300000: //RootNode
+    2300002: RailingLeft
+    2300004: RailingRight
     3300000: //RootNode
+    3300002: RailingLeft
+    3300004: RailingRight
     4300000: 3D_Stairs_Block4
+    4300002: RailingLeft
+    4300004: RailingRight
     6400000: //RootNode
+    6400002: RailingLeft
+    6400004: RailingRight
   materials:
     importMaterials: 1
     materialName: 0
