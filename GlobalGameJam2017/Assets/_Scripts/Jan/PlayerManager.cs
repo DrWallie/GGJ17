@@ -38,7 +38,6 @@ public class PlayerManager : NetworkBehaviour {
         GameObject[] allPlayers = GameObject.FindGameObjectsWithTag("Player");
         if (isLocalPlayer)
         {
-
             LocalGameManager.thisPlayer = this;
             if (PlayerPrefs.HasKey(MainMenuScript.namePref))
                 playerName = PlayerPrefs.GetString(MainMenuScript.namePref);
@@ -100,6 +99,9 @@ public class PlayerManager : NetworkBehaviour {
     {
         //instead of destroying try to disable it, since vital information is stored here.
         deaths++;
+
+        //do something fun, like a death animation
+        StartCoroutine(LocalGameManager.thisManager.RespawnPlayer());
     }
 
     [ClientRpc]

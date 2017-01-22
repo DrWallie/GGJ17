@@ -9,10 +9,29 @@ public class LocalGameManager : MonoBehaviour {
     public static LocalGameManager thisManager;
     public ScoreBoard scoreBoard;
     public static PlayerManager thisPlayer;
+    public GameObject[] spawnPoints;
 
     private void Awake()
     {
         thisManager = this;
+        GetSpawnPoints();
+    }
+
+    private void GetSpawnPoints()
+    {
+        spawnPoints = GameObject.FindGameObjectsWithTag("SpawnPoints");
+    }
+
+    public float timeToRespawn;
+    public IEnumerator RespawnPlayer()
+    {
+        thisPlayer.gameObject.SetActive(false);
+        yield return new WaitForSeconds(timeToRespawn);
+
+        //respawn
+        int pos = UnityEngine.Random.Range(0, spawnPoints.Length);
+        thisPlayer.transform.position = spawnPoints[pos].transform.position;
+        thisPlayer.gameObject.SetActive(true);
     }
 
     [Serializable]
